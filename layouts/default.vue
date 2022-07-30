@@ -1,7 +1,7 @@
 <template>
     <v-app dark>
         <v-navigation-drawer
-            v-if="isNotLoginPage"
+            v-if="!isLoginPage"
             v-model="drawer"
             :clipped="clipped"
             fixed
@@ -29,7 +29,7 @@
             fixed
             app
         >
-            <v-app-bar-nav-icon v-if="isNotLoginPage" @click.stop="drawer = !drawer"/>
+            <v-app-bar-nav-icon v-if="!isLoginPage" @click.stop="drawer = !drawer"/>
             <v-spacer></v-spacer>
             <v-toolbar-title v-text="title"/>
             <v-spacer></v-spacer>
@@ -45,6 +45,7 @@
 
 <script lang=ts>
 import {Vue, Component} from 'vue-property-decorator'
+import firebase from '~/plugins/firebase'
 
 interface Route {
     icon: string
@@ -61,13 +62,22 @@ export default class DefaultLayout extends Vue {
         {icon: 'mdi-apps', title: '고객리스트', to: '/'},
         {icon: 'mdi-chart-bubble', title: '수리', to: '/inspire'}
     ]
-
-    get isNotLoginPage() {
-        return this.$router.currentRoute.name !== 'login'
-    }
+    isLoginPage: boolean = true
 
     get toastMessage() {
         return this.$store.getters.toast
+    }
+
+    beforeMount() {
+        firebase.auth().onAuthStateChanged(async currentUser => {
+            if (currentUser) {
+                this.isLoginPage = false
+                this.$router.currentRoute.name !== 'index' && await this.$router.replace({name: 'index'})
+            } else {
+                this.isLoginPage = true
+                this.$router.currentRoute.name !== 'login' && await this.$router.replace({name: 'login'})
+            }
+        })
     }
 }
 </script>

@@ -1,33 +1,12 @@
 import Vue from 'vue'
 import Vuex, {ActionContext} from 'vuex'
-import firebase from "firebase/compat";
-import {getDatabase, ref, onValue, child, get} from "firebase/database";
-import initializeApp = firebase.initializeApp;
+import {getDatabase, ref, onValue} from "firebase/database";
 import UserCredential = firebase.auth.UserCredential;
 import CredentialInterface from "~/interfaces/credential";
 import UserInterface from "~/interfaces/user";
+import firebase from '~/plugins/firebase'
 
 Vue.use(Vuex)
-
-const config = {
-    apiKey: "AIzaSyAAjby47cHjqBOCPy4PzThrfbeSmUnk9eU",
-    authDomain: "starkey.firebaseapp.com",
-    databaseURL: "https://starkey.firebaseio.com/"
-}
-
-if (!firebase.apps.length) {
-    initializeApp(config);
-} else {
-    firebase.app();
-}
-
-firebase.auth().onAuthStateChanged(currentUser => {
-    if (currentUser) {
-        console.log('Welcome ' + currentUser.email);
-    } else {
-        console.log('Not logged in')
-    }
-})
 
 class RootState {
     toast: string = ''
