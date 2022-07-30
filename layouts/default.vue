@@ -58,8 +58,8 @@ export default class DefaultLayout extends Vue {
     clipped: boolean = false
     drawer: boolean = false
     items: Array<Route> = [
-        {icon: 'mdi-apps', title: 'Welcome', to: '/'},
-        {icon: 'mdi-chart-bubble', title: 'Inspire', to: '/inspire'}
+        {icon: 'mdi-apps', title: '고객리스트', to: '/'},
+        {icon: 'mdi-chart-bubble', title: '수리', to: '/inspire'}
     ]
 
     get isNotLoginPage() {

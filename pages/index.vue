@@ -1,85 +1,60 @@
 <template>
     <v-row justify="center" align="center">
-        <v-col cols="12" sm="8" md="6">
-            <v-card class="logo py-4 d-flex justify-center">
-                <NuxtLogo/>
-                <VuetifyLogo/>
-            </v-card>
-            <v-card>
-                <v-card-title class="headline">
-                    Welcome to the Vuetify + Nuxt.js template
-                </v-card-title>
-                <v-card-text>
-                    <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to
-                        empower developers to create amazing applications.</p>
-                    <p>
-                        For more information on Vuetify, check out the <a
-                        href="https://vuetifyjs.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        documentation
-                    </a>.
-                    </p>
-                    <p>
-                        If you have questions, please join the official <a
-                        href="https://chat.vuetifyjs.com/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title="chat"
-                    >
-                        discord
-                    </a>.
-                    </p>
-                    <p>
-                        Find a bug? Report it on the github <a
-                        href="https://github.com/vuetifyjs/vuetify/issues"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title="contribute"
-                    >
-                        issue board
-                    </a>.
-                    </p>
-                    <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in
-                        the future.</p>
-                    <div class="text-xs-right">
-                        <em><small>&mdash; John Leider</small></em>
-                    </div>
-                    <hr class="my-3">
-                    <a
-                        href="https://nuxtjs.org/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Nuxt Documentation
-                    </a>
-                    <br>
-                    <a
-                        href="https://github.com/nuxt/nuxt.js"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Nuxt GitHub
-                    </a>
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer/>
-                    <v-btn
-                        color="primary"
-                        nuxt
-                        to="/inspire"
-                    >
-                        Continue
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-col>
+        <v-data-table
+            :headers="headers"
+            :items="list"
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
+            :search="search"
+            :custom-filter="filter"
+        >
+            <template v-slot:top>
+                <v-text-field
+                    v-model="search"
+                    label="Search (UPPER CASE ONLY)"
+                    class="mx-4"
+                ></v-text-field>
+            </template>
+            <template #item.address="{value}">{{value.length > 1 ? value : ''}}</template>
+            <template #item.phoneNumber="{value}">
+                <a v-if="value.length > 8" :href='"tel:" + value'>{{value}}</a>
+            </template>
+            <template #item.mobilePhoneNumber="{value}">
+                <a v-if="value.length > 8" :href='"tel:" + value'>{{value}}</a>
+            </template>
+        </v-data-table>
     </v-row>
 </template>
+<script lang=ts>
+import {Vue, Component} from 'vue-property-decorator'
+import {DataTableHeader} from "vuetify";
+import UserInterface from "~/interfaces/user";
 
-<script>
-export default {
-    name: 'IndexPage'
+@Component
+export default class Home extends Vue {
+    headers: Array<DataTableHeader> = [
+        {text: '이름', value: 'name', width: '10vw'},
+        {text: '주소', value: 'address', width: '30vw'},
+        {text: '전화', value: 'phoneNumber', width: '10vw'},
+        {text: '핸드폰', value: 'mobilePhoneNumber', width: '10vw'},
+    ]
+    list: Array<UserInterface> = []
+    sortBy: string = 'name'
+    sortDesc: boolean = false
+    search: string = ''
+
+    async getUserList() {
+        this.list = await this.$store.dispatch('getUserList')
+    }
+
+    filter(value: string, search: string, item: UserInterface) {
+        return value != null &&
+            search != null &&
+            value.toString().indexOf(search) !== -1
+    }
+
+    beforeMount() {
+        this.getUserList()
+    }
 }
 </script>

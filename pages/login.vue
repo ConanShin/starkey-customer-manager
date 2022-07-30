@@ -50,7 +50,7 @@ export default class Login extends Vue {
             try {
                 await this.$store.dispatch('login', this.credential)
                 this.storeInLocalStorage(this.rememberMe)
-                this.$router.push('/').catch(null)
+                await this.$router.push('/')
             } catch (e) {
                 this.$store.commit('toast', '사용자 정보가 유효하지 않습니다.')
             }
@@ -70,10 +70,9 @@ export default class Login extends Vue {
     beforeMount() {
         const email = localStorage.getItem('email')
         if (email) {
-            console.log(email)
             const password = localStorage.getItem('password')
-            this.credential.email = email
-            this.credential.password = password
+            this.credential.email = email || ''
+            this.credential.password = password || ''
             this.rememberMe = true
         } else {
             this.rememberMe = false
