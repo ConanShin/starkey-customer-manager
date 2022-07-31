@@ -35,9 +35,7 @@
             <v-spacer></v-spacer>
         </v-app-bar>
         <v-main>
-            <v-container class="fill-height">
-                <Nuxt/>
-            </v-container>
+            <Nuxt/>
             <v-snackbar dark :value="!!toastMessage" :timeout="20000">{{toastMessage}}</v-snackbar>
         </v-main>
     </v-app>
@@ -59,8 +57,9 @@ export default class DefaultLayout extends Vue {
     clipped: boolean = false
     drawer: boolean = false
     items: Array<Route> = [
-        {icon: 'mdi-apps', title: '고객리스트', to: '/'},
-        {icon: 'mdi-chart-bubble', title: '수리', to: '/inspire'}
+        {icon: 'mdi-magnify', title: '검색', to: '/'},
+        {icon: 'mdi-format-list-bulleted', title: '리스트', to: '/list'},
+        {icon: 'mdi-tools', title: '수리', to: '/repair'},
     ]
     isLoginPage: boolean = true
 

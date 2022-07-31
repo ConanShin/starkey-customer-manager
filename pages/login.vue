@@ -1,5 +1,5 @@
 <template>
-    <v-row justify="center" align="center">
+    <v-row justify="center" align="center" style="margin-top: 30vh">
         <v-form ref="form" v-model="isValid" lazy-validation>
             <v-text-field
                 v-model="credential.email"
@@ -10,6 +10,7 @@
             ></v-text-field>
             <v-text-field
                 v-model="credential.password"
+                @keyup.enter="login"
                 :rules="nullSafetyRules"
                 label="Password"
                 type="password"

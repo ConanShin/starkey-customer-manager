@@ -1,60 +1,64 @@
 <template>
-    <v-row justify="center" align="center">
-        <v-data-table
-            :headers="headers"
-            :items="list"
-            :sort-by.sync="sortBy"
-            :sort-desc.sync="sortDesc"
-            :search="search"
-            :custom-filter="filter"
-        >
-            <template v-slot:top>
+    <div>
+        <template v-if="step === 1">
+            <v-card color="transparent" style="margin-top: 30vh; text-align: center;">
                 <v-text-field
+                    label="검색어"
                     v-model="search"
-                    label="검색"
-                    class="mx-4"
+                    @keyup.enter="next"
+                    hide-details
+                    class="d-inline-flex"
                 ></v-text-field>
-            </template>
-            <template #item.address="{value}">{{value.length > 1 ? value : ''}}</template>
-            <template #item.phoneNumber="{value}">
-                <a v-if="value.length > 8" :href='"tel:" + value'>{{value}}</a>
-            </template>
-            <template #item.mobilePhoneNumber="{value}">
-                <a v-if="value.length > 8" :href='"tel:" + value'>{{value}}</a>
-            </template>
-        </v-data-table>
-    </v-row>
+                <v-btn icon @click="next">
+                    <v-icon>mdi-magnify</v-icon>
+                </v-btn>
+            </v-card>
+        </template>
+        <template v-if="step === 2">
+            <v-card color="transparent" style="text-align: center">
+                <v-text-field
+                    label="검색어"
+                    v-model="search"
+                    @keyup.enter="next"
+                    hide-details
+                    class="d-inline-flex"
+                ></v-text-field>
+                <v-btn icon @click="next">
+                    <v-icon>mdi-magnify</v-icon>
+                </v-btn>
+            </v-card>
+            <v-row v-masonry style="margin: 10px 0 0 3%">
+                <v-card :key="item.id" v-for="item in list" width="45vw" max-width="400px" class="ma-1" v-masonry-tile>
+                    <v-card-text>
+                        {{item.name}}<br/>
+                        {{item.address}}<br/>
+                        <a v-if="item.phoneNumber.length > 8" :href='"tel:" + item.phoneNumber'>{{item.phoneNumber}}</a><br/>
+                        <a v-if="item.mobilePhoneNumber.length > 8" :href='"tel:" + item.mobilePhoneNumber'>{{item.mobilePhoneNumber}}</a>
+                    </v-card-text>
+                </v-card>
+            </v-row>
+        </template>
+    </div>
 </template>
 <script lang=ts>
 import {Vue, Component} from 'vue-property-decorator'
-import {DataTableHeader} from "vuetify";
-import UserInterface from "~/interfaces/user";
+import UserInterface from "~/interfaces/user"
 
 @Component
 export default class Home extends Vue {
-    headers: Array<DataTableHeader> = [
-        {text: '이름', value: 'name', width: '10vw'},
-        {text: '주소', value: 'address', width: '30vw'},
-        {text: '전화', value: 'phoneNumber', width: '10vw'},
-        {text: '핸드폰', value: 'mobilePhoneNumber', width: '10vw'},
-    ]
+    step: number = 1
     list: Array<UserInterface> = []
-    sortBy: string = 'name'
-    sortDesc: boolean = false
     search: string = ''
 
-    async getUserList() {
-        this.list = await this.$store.dispatch('getUserList')
-    }
-
-    filter(value: string, search: string, item: UserInterface) {
-        return value != null &&
-            search != null &&
-            value.toString().indexOf(search) !== -1
-    }
-
-    beforeMount() {
-        this.getUserList()
+    async next() {
+        if (this.search.length === 0) return;
+        this.list = []
+        this.$forceUpdate()
+        const list: Array<UserInterface> = await this.$store.dispatch('getUserList')
+        this.list = list.filter(item => JSON.stringify(item).indexOf(this.search) !== -1)
+        this.step = 2
+        this.$forceUpdate()
     }
 }
 </script>
+
