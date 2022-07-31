@@ -1,11 +1,10 @@
 <template>
-    <v-app dark>
+    <v-app style="overflow-x: hidden; overflow-y: auto;">
         <v-navigation-drawer
             v-if="!isLoginPage"
             v-model="drawer"
             :clipped="clipped"
-            fixed
-            app
+            fixed app
         >
             <v-list>
                 <v-list-item
@@ -26,6 +25,7 @@
         </v-navigation-drawer>
         <v-app-bar
             :clipped-left="clipped"
+            color="primary"
             fixed
             app
         >
@@ -36,7 +36,8 @@
         </v-app-bar>
         <v-main>
             <Nuxt/>
-            <v-snackbar dark :value="!!toastMessage" :timeout="20000">{{toastMessage}}</v-snackbar>
+            <user-detail-dialog></user-detail-dialog>
+            <v-snackbar :value="!!toastMessage" :timeout="20000">{{toastMessage}}</v-snackbar>
         </v-main>
     </v-app>
 </template>
@@ -71,7 +72,7 @@ export default class DefaultLayout extends Vue {
         firebase.auth().onAuthStateChanged(async currentUser => {
             if (currentUser) {
                 this.isLoginPage = false
-                this.$router.currentRoute.name !== 'index' && await this.$router.replace({name: 'index'})
+                this.$router.currentRoute.name === 'login' && await this.$router.replace({name: 'index'})
             } else {
                 this.isLoginPage = true
                 this.$router.currentRoute.name !== 'login' && await this.$router.replace({name: 'login'})

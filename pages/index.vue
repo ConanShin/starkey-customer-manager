@@ -1,12 +1,12 @@
 <template>
     <div>
         <template v-if="step === 1">
-            <v-card color="transparent" style="margin-top: 30vh; text-align: center;">
+            <v-card color="transparent" style="margin-top: 30vh; text-align: center;" flat>
                 <v-text-field
                     label="검색어"
                     v-model="search"
                     @keyup.enter="next"
-                    hide-details
+                    hide-details dense clearable
                     class="d-inline-flex"
                 ></v-text-field>
                 <v-btn icon @click="next">
@@ -15,25 +15,32 @@
             </v-card>
         </template>
         <template v-if="step === 2">
-            <v-card color="transparent" style="text-align: center">
+            <v-card color="transparent" style="margin-top: 20px; text-align: center" flat>
                 <v-text-field
                     label="검색어"
                     v-model="search"
                     @keyup.enter="next"
-                    hide-details
+                    hide-details dense clearable
                     class="d-inline-flex"
                 ></v-text-field>
                 <v-btn icon @click="next">
                     <v-icon>mdi-magnify</v-icon>
                 </v-btn>
             </v-card>
-            <v-row v-masonry style="margin: 10px 0 0 3%">
-                <v-card :key="item.id" v-for="item in list" width="45vw" max-width="400px" class="ma-1" v-masonry-tile>
+            <v-row v-masonry style="margin: 0 0 0 3%">
+                <v-card
+                    :key="item.id"
+                    v-for="item in list"
+                    width="45vw"
+                    max-width="400px"
+                    class="ma-1"
+                    @click="showDetail(item)"
+                    v-masonry-tile>
                     <v-card-text>
-                        {{item.name}}<br/>
-                        {{item.address}}<br/>
-                        <a v-if="item.phoneNumber.length > 8" :href='"tel:" + item.phoneNumber'>{{item.phoneNumber}}</a><br/>
-                        <a v-if="item.mobilePhoneNumber.length > 8" :href='"tel:" + item.mobilePhoneNumber'>{{item.mobilePhoneNumber}}</a>
+                        <h3>{{item.name}}</h3>
+                        <div>{{item.address}}</div>
+                        <u v-if="item.phoneNumber.length > 8" @click.stop.prevent="call(item.phoneNumber)">{{item.phoneNumber}}</u>
+                        <u v-if="item.mobilePhoneNumber.length > 8" @click.stop.prevent="call(item.mobilePhoneNumber)">{{item.mobilePhoneNumber}}</u>
                     </v-card-text>
                 </v-card>
             </v-row>
@@ -41,23 +48,36 @@
     </div>
 </template>
 <script lang=ts>
-import {Vue, Component} from 'vue-property-decorator'
+import {Vue, Component, Watch} from 'vue-property-decorator'
 import UserInterface from "~/interfaces/user"
 
 @Component
 export default class Home extends Vue {
     step: number = 1
     list: Array<UserInterface> = []
-    search: string = ''
+    search: string | null = null
+
+    @Watch('search')
+    searchFieldChanged(value: string | null) {
+        if (value === null || value.length === 0) this.step = 1
+    }
 
     async next() {
-        if (this.search.length === 0) return;
+        if (this.search === null || this.search.length === 0) return;
         this.list = []
         this.$forceUpdate()
         const list: Array<UserInterface> = await this.$store.dispatch('getUserList')
-        this.list = list.filter(item => JSON.stringify(item).indexOf(this.search) !== -1)
+        this.list = list.filter(item => JSON.stringify(item).indexOf(this.search!) !== -1)
         this.step = 2
         this.$forceUpdate()
+    }
+
+    showDetail(user: UserInterface) {
+        this.$store.commit('selectedUser', user)
+    }
+
+    call(number: string) {
+        location.href = "tel:" + number
     }
 }
 </script>

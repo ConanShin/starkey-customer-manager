@@ -1,5 +1,5 @@
 <template>
-    <v-row justify="center" style="margin-top: 20px">
+    <v-row justify="center" style="margin-top: 0">
         <v-data-table
             :headers="headers"
             :items="list"
@@ -7,6 +7,8 @@
             :sort-desc.sync="sortDesc"
             :search="search"
             :custom-filter="filter"
+            @click:row="showDetail"
+            style="width: 100%; margin: 0 5%;"
         >
             <template v-slot:top>
                 <v-text-field
@@ -16,11 +18,11 @@
                 ></v-text-field>
             </template>
             <template #item.address="{value}">{{value.length > 1 ? value : ''}}</template>
-            <template #item.phoneNumber="{value}">
-                <a v-if="value.length > 8" :href='"tel:" + value'>{{value}}</a>
+            <template #item.phoneNumber="{item}">
+                <u v-if="item.phoneNumber.length > 8" @click.stop.prevent="call(item.phoneNumber)">{{item.phoneNumber}}</u>
             </template>
-            <template #item.mobilePhoneNumber="{value}">
-                <a v-if="value.length > 8" :href='"tel:" + value'>{{value}}</a>
+            <template #item.mobilePhoneNumber="{item}">
+                <u v-if="item.mobilePhoneNumber.length > 8" @click.stop.prevent="call(item.mobilePhoneNumber)">{{item.mobilePhoneNumber}}</u>
             </template>
         </v-data-table>
     </v-row>
@@ -53,8 +55,24 @@ export default class List extends Vue {
             value.toString().indexOf(search) !== -1
     }
 
+    showDetail(user: UserInterface) {
+        this.$store.commit('selectedUser', user)
+    }
+
+    call(number: string) {
+        location.href = "tel:" + number
+    }
+
     beforeMount() {
         this.getUserList()
     }
 }
 </script>
+<style>
+.v-data-footer__select {
+    display: none
+}
+.v-data-table-header-mobile {
+    display: none
+}
+</style>
