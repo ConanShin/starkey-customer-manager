@@ -2,20 +2,26 @@
     <v-row justify="center" style="margin-top: 0">
         <v-data-table
             :headers="headers"
-            :items="list"
+            :items="filteredList"
             :sort-by.sync="sortBy"
             :sort-desc.sync="sortDesc"
-            :search="search"
-            :custom-filter="filter"
             @click:row="showDetail"
             style="width: 100%; margin: 0 5%;"
         >
             <template v-slot:top>
-                <v-text-field
-                    v-model="search"
-                    label="검색어"
-                    class="mx-4"
-                ></v-text-field>
+                <v-row style="margin-top: 20px" align="center" justify="center">
+                    <v-text-field
+                        label="검색어"
+                        v-model="search"
+                        @keyup.enter="filter"
+                        style="width: 60%"
+                        class="shrink mt-0 pt-0 mb-3"
+                        clearable hide-details dense
+                    ></v-text-field>
+                    <v-btn icon @click="filter">
+                        <v-icon >mdi-magnify</v-icon>
+                    </v-btn>
+                </v-row>
             </template>
             <template #item.address="{value}">{{value.length > 1 ? value : ''}}</template>
             <template #item.phoneNumber="{item}">
@@ -44,15 +50,19 @@ export default class List extends Vue {
     sortBy: string = 'name'
     sortDesc: boolean = false
     search: string = ''
+    filterValue: string = ''
 
     async getUserList() {
         this.list = await this.$store.dispatch('getUserList')
     }
 
-    filter(value: string, search: string, item: UserInterface) {
-        return value != null &&
-            search != null &&
-            value.toString().indexOf(search) !== -1
+    get filteredList() {
+        if (this.filterValue.length === 0) return this.list
+        return this.list.filter(item => JSON.stringify(item).indexOf(this.filterValue) !== -1)
+    }
+
+    filter() {
+        this.filterValue = this.search
     }
 
     showDetail(user: UserInterface) {

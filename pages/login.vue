@@ -1,5 +1,5 @@
 <template>
-    <v-row justify="center" align="center" style="margin-top: 30vh">
+    <v-row justify="center" align="center" style="padding-top: 40%;">
         <v-form ref="form" v-model="isValid" lazy-validation>
             <v-text-field
                 v-model="credential.email"

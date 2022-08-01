@@ -1,5 +1,5 @@
 <template>
-    <v-app style="overflow-x: hidden; overflow-y: auto;">
+    <v-app style="overflow-x: hidden;">
         <v-navigation-drawer
             v-if="!isLoginPage"
             v-model="drawer"
@@ -34,7 +34,7 @@
             <v-toolbar-title v-text="title"/>
             <v-spacer></v-spacer>
         </v-app-bar>
-        <v-main>
+        <v-main style="overflow-y: hidden;">
             <Nuxt/>
             <user-detail-dialog></user-detail-dialog>
             <v-snackbar :value="!!toastMessage" :timeout="20000">{{toastMessage}}</v-snackbar>

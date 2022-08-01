@@ -1,32 +1,34 @@
 <template>
     <div>
         <template v-if="step === 1">
-            <v-card color="transparent" style="margin-top: 30vh; text-align: center;" flat>
+            <v-row style="margin-top: 40%" align="center" justify="center">
                 <v-text-field
                     label="검색어"
                     v-model="search"
                     @keyup.enter="next"
-                    hide-details dense clearable
-                    class="d-inline-flex"
+                    style="width: 60%"
+                    class="shrink mt-0 pt-0"
+                    clearable hide-details dense
                 ></v-text-field>
                 <v-btn icon @click="next">
-                    <v-icon>mdi-magnify</v-icon>
+                    <v-icon >mdi-magnify</v-icon>
                 </v-btn>
-            </v-card>
+            </v-row>
         </template>
         <template v-if="step === 2">
-            <v-card color="transparent" style="margin-top: 20px; text-align: center" flat>
+            <v-row align="center" justify="center" style="margin: 20px 0 5px 0">
                 <v-text-field
                     label="검색어"
                     v-model="search"
                     @keyup.enter="next"
-                    hide-details dense clearable
-                    class="d-inline-flex"
+                    style="width: 60%"
+                    class="shrink mt-0 pt-0"
+                    clearable hide-details dense
                 ></v-text-field>
                 <v-btn icon @click="next">
                     <v-icon>mdi-magnify</v-icon>
                 </v-btn>
-            </v-card>
+            </v-row>
             <v-row v-masonry style="margin: 0 0 0 3%">
                 <v-card
                     :key="item.id"
@@ -55,7 +57,7 @@ import UserInterface from "~/interfaces/user"
 export default class Home extends Vue {
     step: number = 1
     list: Array<UserInterface> = []
-    search: string | null = null
+    search: string = ''
 
     @Watch('search')
     searchFieldChanged(value: string | null) {
@@ -63,12 +65,13 @@ export default class Home extends Vue {
     }
 
     async next() {
-        if (this.search === null || this.search.length === 0) return;
+        if (this.search.length === 0) return;
         this.list = []
         this.$forceUpdate()
         const list: Array<UserInterface> = await this.$store.dispatch('getUserList')
-        this.list = list.filter(item => JSON.stringify(item).indexOf(this.search!) !== -1)
+        this.list = list.filter(item => JSON.stringify(item).indexOf(this.search) !== -1)
         this.step = 2
+        window.scrollTo(0, 0)
         this.$forceUpdate()
     }
 
