@@ -1,7 +1,7 @@
 <template>
     <div>
         <template v-if="step === 1">
-            <v-row style="margin-top: 40%" align="center" justify="center">
+            <v-row style="margin-top: 40vh" align="center" justify="center">
                 <v-text-field
                     label="검색어"
                     v-model="search"
@@ -41,8 +41,8 @@
                     <v-card-text>
                         <h3>{{item.name}}</h3>
                         <div>{{item.address}}</div>
-                        <u v-if="item.phoneNumber.length > 8" @click.stop.prevent="call(item.phoneNumber)">{{item.phoneNumber}}</u>
-                        <u v-if="item.mobilePhoneNumber.length > 8" @click.stop.prevent="call(item.mobilePhoneNumber)">{{item.mobilePhoneNumber}}</u>
+                        <u v-if="item.phoneNumber?.length > 8" @click.stop.prevent="call(item.phoneNumber)">{{item.phoneNumber}}</u>
+                        <u v-if="item.mobilePhoneNumber?.length > 8" @click.stop.prevent="call(item.mobilePhoneNumber)">{{item.mobilePhoneNumber}}</u>
                     </v-card-text>
                 </v-card>
             </v-row>
@@ -56,8 +56,20 @@ import UserInterface from "~/interfaces/user"
 @Component
 export default class Home extends Vue {
     step: number = 1
-    list: Array<UserInterface> = []
     search: string = ''
+    filterValue: string = ''
+
+    get list() {
+        if (this.filterValue.length === 0) {
+            this.step = 1
+            setTimeout(() => this.$store.commit('loading', false), 1000)
+            return this.$store.getters.userList
+        } else {
+            const list = this.$store.getters.userList.filter((item: UserInterface) => JSON.stringify({name: item.name, address: item.address}).indexOf(this.filterValue) !== -1)
+            setTimeout(() => this.$store.commit('loading', false), 1000)
+            return list
+        }
+    }
 
     @Watch('search')
     searchFieldChanged(value: string | null) {
@@ -65,14 +77,10 @@ export default class Home extends Vue {
     }
 
     async next() {
-        if (this.search.length === 0) return;
-        this.list = []
-        this.$forceUpdate()
-        const list: Array<UserInterface> = await this.$store.dispatch('getUserList')
-        this.list = list.filter(item => JSON.stringify(item).indexOf(this.search) !== -1)
+        this.$store.commit('loading', true)
+        this.filterValue = this.search
         this.step = 2
         window.scrollTo(0, 0)
-        this.$forceUpdate()
     }
 
     showDetail(user: UserInterface) {

@@ -37,7 +37,11 @@
         <v-main style="overflow-y: hidden;">
             <Nuxt/>
             <user-detail-dialog></user-detail-dialog>
+            <repair-detail-dialog></repair-detail-dialog>
             <v-snackbar :value="!!toastMessage" :timeout="20000">{{toastMessage}}</v-snackbar>
+            <v-overlay :value="$store.getters['loading']">
+                <v-progress-circular indeterminate size="64"></v-progress-circular>
+            </v-overlay>
         </v-main>
     </v-app>
 </template>
@@ -73,6 +77,8 @@ export default class DefaultLayout extends Vue {
             if (currentUser) {
                 this.isLoginPage = false
                 this.$router.currentRoute.name === 'login' && await this.$router.replace({name: 'index'})
+                this.$store.dispatch('getUserList').then()
+                this.$store.dispatch('getRepairList').then()
             } else {
                 this.isLoginPage = true
                 this.$router.currentRoute.name !== 'login' && await this.$router.replace({name: 'login'})
