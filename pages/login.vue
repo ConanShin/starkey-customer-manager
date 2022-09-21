@@ -1,5 +1,5 @@
 <template>
-    <v-row justify="center" align="center" style="padding-top: 40%;">
+    <v-row justify="center" align="center" style="padding-top: 20vh;">
         <v-form ref="form" v-model="isValid" lazy-validation>
             <v-text-field
                 v-model="credential.email"
@@ -51,7 +51,6 @@ export default class Login extends Vue {
             try {
                 await this.$store.dispatch('login', this.credential)
                 this.storeInLocalStorage(this.rememberMe)
-                await this.$router.push('/')
             } catch (e) {
                 this.$store.commit('toast', '사용자 정보가 유효하지 않습니다.')
             }
