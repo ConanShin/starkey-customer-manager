@@ -32,6 +32,9 @@
                 <u v-if="item.mobilePhoneNumber?.length > 8" @click.stop.prevent="call(item.mobilePhoneNumber)">{{item.mobilePhoneNumber}}</u>
             </template>
         </v-data-table>
+        <v-btn elevation="3" fixed fab bottom right style="margin: 0 30px 30px 0" @click="newUser">
+            <v-icon>mdi-plus</v-icon>
+        </v-btn>
     </v-row>
 </template>
 <script lang=ts>
@@ -56,12 +59,25 @@ export default class List extends Vue {
     get filteredList() {
         const list = this.$store.getters.userList
         if (list.length > 0) this.loading = false
-        if (this.filterValue.length === 0) return list
-        return list.filter((item: UserInterface) => JSON.stringify({name: item.name, address: item.address}).indexOf(this.filterValue) !== -1)
+        if (!this.filterValue) return list
+        return list
+            .filter((item: UserInterface) => JSON.stringify({
+                name: item.name,
+                address: item.address,
+                regDate: item.registrationDate,
+                aidDate: item.hearingAid
+            }).indexOf(this.filterValue) !== -1)
     }
 
     filter() {
         this.filterValue = this.search
+    }
+
+    newUser() {
+        this.$store.commit('selectedUser', {
+            id: new Date().getTime(),
+            hearingAid: []
+        })
     }
 
     showDetail(user: UserInterface) {

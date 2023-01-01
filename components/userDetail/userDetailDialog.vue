@@ -33,6 +33,7 @@
                 <v-btn v-if="!readonly && tab === 1" @click="add">추가</v-btn>
                 <v-btn v-if="readonly" @click="edit">수정</v-btn>
                 <v-btn v-if="!readonly" @click="save">저장</v-btn>
+                <v-btn v-if="!readonly && deleteVisible" @click="del">삭제</v-btn>
                 <v-btn @click="close">닫기</v-btn>
             </v-card-actions>
         </v-card>
@@ -50,6 +51,7 @@ export default class UserDetailDialog extends Vue {
     tabList = ['개인정보', '구매 이력']
     tab = 0
     readonly: boolean = true
+    deleteVisible: boolean = true
 
     get dialog() {
         if (this.$store.getters.selectedUser === null) this.tab = 0
@@ -65,6 +67,7 @@ export default class UserDetailDialog extends Vue {
     }
 
     async save() {
+        if (!this.user.name) return this.$store.dispatch('showToast', '이름을 입력해 주세요.')
         this.user.hearingAid = this.user.hearingAid.filter((item: HearingAidInterface) => !!item.date)
         await this.$store.dispatch('updateUser', this.user)
         this.readonly = true
@@ -73,6 +76,14 @@ export default class UserDetailDialog extends Vue {
     add() {
         this.user.hearingAid.push({})
         this.$store.commit('selectedUser', this.user)
+    }
+
+    del() {
+        this.$store.commit('dialog', {
+            title: '고객삭제 확인',
+            description: this.user.name + '님의 고객정보를 삭제하시겠습니까?',
+            callback: () => this.$store.dispatch('deleteUser', this.user)
+        })
     }
 
     close() {

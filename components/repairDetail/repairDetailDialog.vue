@@ -13,9 +13,17 @@
                 </v-row>
                 <v-textarea label="주소" v-model="repair.address" rows="1"
                             auto-grow :disabled="readonly" no-resize clearable></v-textarea>
-                <v-text-field label="등록일" v-model="repair.registrationDate" :disabled="readonly" clearable></v-text-field>
-                <v-text-field label="전화번호 1" v-model="repair.phoneNumber" :disabled="readonly" clearable></v-text-field>
-                <v-text-field label="전화번호 2" v-model="repair.mobilePhoneNumber" :disabled="readonly" clearable></v-text-field>
+                <v-text-field label="등록일" v-model="repair.registrationDate" :disabled="readonly" placeholder="YYYY/MM/DD" clearable></v-text-field>
+                <v-text-field label="전화번호 1" v-model="repair.phoneNumber" :disabled="readonly" placeholder="000-0000-0000" clearable>
+                    <template v-slot:append v-if="readonly && repair.phoneNumber">
+                        <v-icon @click="call(repair.phoneNumber)">mdi-phone</v-icon>
+                    </template>
+                </v-text-field>
+                <v-text-field label="전화번호 2" v-model="repair.mobilePhoneNumber" :disabled="readonly" placeholder="000-0000-0000" clearable>
+                    <template v-slot:append v-if="readonly && repair.mobilePhoneNumber">
+                        <v-icon @click="call(repair.mobilePhoneNumber)">mdi-phone</v-icon>
+                    </template>
+                </v-text-field>
             </v-card-text>
             <v-data-table
                 class="ma-2"
@@ -42,6 +50,7 @@
                 <v-btn v-if="!readonly" @click="add">추가</v-btn>
                 <v-btn v-if="readonly" @click="edit">수정</v-btn>
                 <v-btn v-if="!readonly" @click="save">저장</v-btn>
+                <v-btn v-if="!readonly && deleteVisible" @click="del">삭제</v-btn>
                 <v-btn @click="close">닫기</v-btn>
             </v-card-actions>
         </v-card>
@@ -58,6 +67,7 @@ import {DataTableHeader} from "vuetify";
 })
 export default class RepairDetailDialog extends Vue {
     readonly: boolean = true
+    deleteVisible: boolean = true
 
     headerList: Array<DataTableHeader> = [
         {text: '수리일', value: 'date'},
@@ -78,7 +88,8 @@ export default class RepairDetailDialog extends Vue {
     }
 
     async save() {
-        this.repair.repairReport = this.repair.repairReport.filter((item: RepairReportInterface) => !!item.date)
+        if (!this.repair.name) return this.$store.dispatch('showToast', '이름을 입력해 주세요.')
+        this.repair.repairReport = this.repair.repairReport?.filter((item: RepairReportInterface) => !!item.date)
         await this.$store.dispatch('updateRepair', this.repair)
         this.readonly = true
     }
@@ -87,6 +98,14 @@ export default class RepairDetailDialog extends Vue {
         if (this.repair.repairReport === undefined) this.repair.repairReport = []
         this.repair.repairReport.push({})
         this.$store.commit('selectedRepair', this.repair)
+    }
+
+    del() {
+        this.$store.commit('dialog', {
+            title: '고객삭제 확인',
+            description: this.repair.name + '님의 수리기록을 삭제하시겠습니까?',
+            callback: () => this.$store.dispatch('deleteRepair', this.repair)
+        })
     }
 
     close() {
@@ -102,6 +121,10 @@ export default class RepairDetailDialog extends Vue {
     deleteItem(index: number) {
         this.repair.repairReport.splice(index, 1)
         this.$store.commit('selectedRepair', this.repair)
+    }
+
+    call(number: string) {
+        location.href = "tel:" + number
     }
 }
 </script>

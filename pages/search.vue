@@ -54,9 +54,9 @@ import {Vue, Component, Watch} from 'vue-property-decorator'
 import UserInterface from "~/interfaces/user"
 
 @Component
-export default class Home extends Vue {
+export default class Search extends Vue {
     step: number = 1
-    search: string = ''
+    search: string | null = ''
     filterValue: string = ''
 
     get list() {
@@ -65,7 +65,12 @@ export default class Home extends Vue {
             setTimeout(() => this.$store.commit('loading', false), 1000)
             return this.$store.getters.userList
         } else {
-            const list = this.$store.getters.userList.filter((item: UserInterface) => JSON.stringify({name: item.name, address: item.address}).indexOf(this.filterValue) !== -1)
+            const list = this.$store.getters.userList
+                .filter((item: UserInterface) => JSON.stringify({
+                    name: item.name,
+                    address: item.address,
+                    registrationDate: item.registrationDate
+                }).indexOf(this.filterValue) !== -1)
             setTimeout(() => this.$store.commit('loading', false), 1000)
             return list
         }
@@ -73,10 +78,15 @@ export default class Home extends Vue {
 
     @Watch('search')
     searchFieldChanged(value: string | null) {
-        if (value === null || value.length === 0) this.step = 1
+        if (value === null || value.length === 0) {
+            this.step = 1
+            this.$store.commit('loading', false)
+        }
     }
 
     async next() {
+        if (this.search === null || this.search.length === 0) return
+
         this.$store.commit('loading', true)
         this.filterValue = this.search
         this.step = 2

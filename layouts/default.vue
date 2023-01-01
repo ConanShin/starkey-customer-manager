@@ -38,6 +38,7 @@
             <Nuxt/>
             <user-detail-dialog></user-detail-dialog>
             <repair-detail-dialog></repair-detail-dialog>
+            <popup></popup>
             <v-snackbar :value="!!toastMessage" :timeout="20000">{{toastMessage}}</v-snackbar>
             <v-overlay :value="$store.getters['loading']">
                 <v-progress-circular indeterminate size="64"></v-progress-circular>
@@ -62,9 +63,10 @@ export default class DefaultLayout extends Vue {
     clipped: boolean = false
     drawer: boolean = false
     items: Array<Route> = [
-        {icon: 'mdi-magnify', title: '검색', to: '/'},
+        {icon: 'mdi-magnify', title: '홈', to: '/notice'},
         {icon: 'mdi-format-list-bulleted', title: '리스트', to: '/list'},
         {icon: 'mdi-tools', title: '수리', to: '/repair'},
+        {icon: 'mdi-checkbox-multiple-outline', title: '뭐였더라', to: '/check'},
     ]
     isLoginPage: boolean = true
 
@@ -76,7 +78,7 @@ export default class DefaultLayout extends Vue {
         firebase.auth().onAuthStateChanged(async currentUser => {
             if (currentUser) {
                 this.isLoginPage = false
-                this.$router.currentRoute.name === 'login' && await this.$router.replace({name: 'index'})
+                this.$router.currentRoute.name === 'login' && await this.$router.replace({name: 'notice'})
                 this.$store.dispatch('getUserList').then()
                 this.$store.dispatch('getRepairList').then()
             } else {

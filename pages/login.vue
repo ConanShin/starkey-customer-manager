@@ -52,7 +52,7 @@ export default class Login extends Vue {
                 await this.$store.dispatch('login', this.credential)
                 this.storeInLocalStorage(this.rememberMe)
             } catch (e) {
-                this.$store.commit('toast', '사용자 정보가 유효하지 않습니다.')
+                await this.$store.dispatch('showToast', '사용자 정보가 유효하지 않습니다.')
             }
         }
     }

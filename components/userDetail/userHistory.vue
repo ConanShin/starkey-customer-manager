@@ -5,7 +5,7 @@
             :items="user.hearingAid"
         >
             <template #item.date="{item}">
-                <v-text-field v-model="item.date" :disabled="readonly"></v-text-field>
+                <v-text-field v-model="item.date" :disabled="readonly" placeholder="YYYY/MM/DD"></v-text-field>
             </template>
             <template #item.model="{item}">
                 <v-text-field v-model="item.model" :disabled="readonly"></v-text-field>

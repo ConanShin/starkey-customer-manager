@@ -34,6 +34,9 @@
                 <u v-if="item.mobilePhoneNumber?.length > 8" @click.stop.prevent="call(item.mobilePhoneNumber)">{{item.mobilePhoneNumber}}</u>
             </template>
         </v-data-table>
+        <v-btn elevation="3" fixed fab bottom right style="margin: 0 30px 30px 0" @click="newRecord">
+            <v-icon>mdi-plus</v-icon>
+        </v-btn>
     </v-row>
 </template>
 <script lang=ts>
@@ -86,6 +89,13 @@ export default class Repair extends Vue {
         this.filterValue = this.search
     }
 
+    newRecord() {
+        this.$store.commit('selectedRepair', {
+            id: new Date().getTime(),
+            repairReport: []
+        })
+    }
+
     showDetail(repair: RepairInterface) {
         this.$store.commit('selectedRepair', repair)
     }
@@ -95,3 +105,11 @@ export default class Repair extends Vue {
     }
 }
 </script>
+<style>
+.v-data-footer__select {
+    display: none
+}
+.v-data-table-header-mobile {
+    display: none
+}
+</style>
