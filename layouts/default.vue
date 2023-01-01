@@ -76,14 +76,15 @@ export default class DefaultLayout extends Vue {
 
     beforeMount() {
         firebase.auth().onAuthStateChanged(async currentUser => {
+            console.log(this.$router.currentRoute.name, currentUser)
             if (currentUser) {
                 this.isLoginPage = false
-                this.$router.currentRoute.name === 'login' && await this.$router.replace({name: 'notice'})
+                this.$router.currentRoute.name === 'index' && await this.$router.replace({name: 'notice'})
                 this.$store.dispatch('getUserList').then()
                 this.$store.dispatch('getRepairList').then()
             } else {
                 this.isLoginPage = true
-                this.$router.currentRoute.name !== 'login' && await this.$router.replace({name: 'login'})
+                this.$router.currentRoute.name !== 'index' && await this.$router.replace({name: 'index'})
             }
         })
     }
