@@ -66,7 +66,7 @@ export default class DefaultLayout extends Vue {
         {icon: 'mdi-magnify', title: '홈', to: '/notice'},
         {icon: 'mdi-format-list-bulleted', title: '리스트', to: '/list'},
         {icon: 'mdi-tools', title: '수리', to: '/repair'},
-        {icon: 'mdi-checkbox-multiple-outline', title: '뭐였더라', to: '/check'},
+        {icon: 'mdi-checkbox-multiple-outline', title: '적합', to: '/check'},
     ]
     isLoginPage: boolean = true
 
