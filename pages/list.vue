@@ -46,6 +46,7 @@ import UserInterface from "~/interfaces/user";
 export default class List extends Vue {
     headers: Array<DataTableHeader> = [
         {text: '이름', value: 'name', width: '10vw'},
+        {text: '가입일', value: 'registrationDate', width: '7vw'},
         {text: '주소', value: 'address', width: '30vw'},
         {text: '전화', value: 'phoneNumber', width: '10vw'},
         {text: '핸드폰', value: 'mobilePhoneNumber', width: '10vw'},
