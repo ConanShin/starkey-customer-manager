@@ -1,5 +1,5 @@
 <template>
-    <v-card style="padding: 0 0 20px 0; margin: 5px" tile outlined>
+    <v-card style="padding: 0 0 20px 0; margin: 5px; background: transparent;" tile outlined>
         <v-card-title style="font-size: 15px">{{ title }}</v-card-title>
         <v-row v-masonry style="margin-left: 1px">
             <v-card

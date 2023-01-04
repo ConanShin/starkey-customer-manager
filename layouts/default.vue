@@ -26,18 +26,19 @@
         <v-app-bar
             :clipped-left="clipped"
             color="primary"
-            fixed
-            app
+            style="color: white"
+            fixed app
         >
-            <v-app-bar-nav-icon v-if="!isLoginPage" @click.stop="drawer = !drawer"/>
+            <v-app-bar-nav-icon v-if="!isLoginPage" @click.stop="drawer = !drawer" style="color: white"/>
             <v-spacer></v-spacer>
             <v-toolbar-title v-text="title"/>
             <v-spacer></v-spacer>
         </v-app-bar>
-        <v-main style="overflow-y: hidden;">
+        <v-main style="overflow-y: hidden; background: aliceblue">
             <Nuxt/>
             <user-detail-dialog></user-detail-dialog>
             <repair-detail-dialog></repair-detail-dialog>
+            <check-new-dialog></check-new-dialog>
             <popup></popup>
             <v-snackbar :value="!!toastMessage" :timeout="20000">{{toastMessage}}</v-snackbar>
             <v-overlay :value="$store.getters['loading']">
@@ -76,7 +77,6 @@ export default class DefaultLayout extends Vue {
 
     beforeMount() {
         firebase.auth().onAuthStateChanged(async currentUser => {
-            console.log(this.$router.currentRoute.name, currentUser)
             if (currentUser) {
                 this.isLoginPage = false
                 this.$router.currentRoute.name === 'index' && await this.$router.replace({name: 'notice'})

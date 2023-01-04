@@ -1,11 +1,13 @@
 <template>
-    <div>
+    <v-row justify="center" style="margin-top: 0">
         <v-data-table
             :headers="headers"
             :items="checkList"
             :sort-by.sync="sortBy"
             :sort-desc.sync="sortDesc"
-            style="width: 100%"
+            item-key="index"
+            disable-pagination
+            style="width: 100%; margin: 0 5%; background: transparent;"
         >
             <template #item.name="{item}">
                 <v-text-field v-model="item.name" clearable></v-text-field>
@@ -44,7 +46,7 @@
         <v-btn elevation="3" fixed fab bottom right style="margin: 0 30px 30px 0" @click="newCheck">
             <v-icon>mdi-plus</v-icon>
         </v-btn>
-    </div>
+    </v-row>
 </template>
 <script lang=ts>
 import {Vue, Component} from 'vue-property-decorator'
@@ -54,22 +56,22 @@ import {DataTableHeader} from "vuetify";
 @Component
 export default class Check extends Vue {
     headers: Array<DataTableHeader> = [
-        {text: '이름', value: 'name', width: '5vw'},
-        {text: '등록일', value: 'date', width: '7vw'},
-        {text: '수급대상', value: 'support', width: '4vw'},
-        {text: '건보대상', value: 'health', width: '4vw'},
-        {text: '1차', value: 'first', width: '7vw'},
-        {text: '2차', value: 'second', width: '7vw'},
-        {text: '3차', value: 'third', width: '7vw'},
-        {text: '4차', value: 'fourth', width: '7vw'},
-        {text: '5차', value: 'fifth', width: '7vw'},
+        {text: '이름', value: 'name', sortable: false, width: '5vw'},
+        {text: '등록일', value: 'date', sortable: false, width: '7vw'},
+        {text: '수급대상', value: 'support', sortable: false, width: '4vw'},
+        {text: '건보대상', value: 'health', sortable: false, width: '4vw'},
+        {text: '1차', value: 'first', sortable: false, width: '7vw'},
+        {text: '2차', value: 'second', sortable: false, width: '7vw'},
+        {text: '3차', value: 'third', sortable: false, width: '7vw'},
+        {text: '4차', value: 'fourth', sortable: false, width: '7vw'},
+        {text: '5차', value: 'fifth', sortable: false, width: '7vw'},
     ]
-    sortBy: string = 'name'
+    sortBy: string = ''
     sortDesc: boolean = false
     checkList: Array<CheckInterface> = []
 
     newCheck() {
-        this.checkList.push({} as CheckInterface)
+        this.checkList.unshift({} as CheckInterface)
     }
 
     save() {
@@ -99,5 +101,13 @@ export default class Check extends Vue {
 }
 table th + th { border-left:1px solid #dddddd; }
 table td + td { border-left:1px solid #dddddd; }
+
+input::placeholder {
+    opacity: 0.2;
+    font-size: 13px;
+}
+input {
+    font-size: 13px;
+}
 </style>
 

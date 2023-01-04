@@ -6,8 +6,9 @@
             :sort-by.sync="sortBy"
             :sort-desc.sync="sortDesc"
             @click:row="showDetail"
-            style="width: 100%; margin: 0 5%;"
+            style="width: 100%; margin: 0 5%; background: transparent;"
             :loading="loading"
+
         >
             <template v-slot:top>
                 <v-row style="margin-top: 20px; margin-bottom: 20px" align="center" justify="center">
@@ -99,4 +100,8 @@ export default class List extends Vue {
 }
 table th + th { border-left:1px solid #dddddd; }
 table td + td { border-left:1px solid #dddddd; }
+
+input::placeholder {
+    opacity: 0.5;
+}
 </style>

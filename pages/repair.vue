@@ -6,7 +6,7 @@
             :sort-by.sync="sortBy"
             :sort-desc.sync="sortDesc"
             @click:row="showDetail"
-            style="width: 100%; margin: 0 5%;"
+            style="width: 100%; margin: 0 5%; background: transparent;"
             :loading="loading"
         >
             <template v-slot:top>

@@ -134,6 +134,7 @@ export const actions = {
                         ...list[key]
                     } as CheckInterface
                 })
+                formattedList.sort(compareName)
                 actionContext.commit('checkList', formattedList)
                 resolve(formattedList)
             })
@@ -156,4 +157,10 @@ export const getters = {
     selectedRepair: (state: RootState) => state.selectedRepair,
     loading: (state: RootState) => state.loading,
     dialog: (state: RootState) => state.dialog
+}
+
+const compareName = (a: CheckInterface, b: CheckInterface) => {
+    if ( a.name < b.name ) return -1
+    if ( a.name > b.name ) return 1
+    return 0
 }
