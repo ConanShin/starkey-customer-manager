@@ -114,4 +114,9 @@ export default class Repair extends Vue {
 }
 table th + th { border-left:1px solid #dddddd; }
 table td + td { border-left:1px solid #dddddd; }
+
+tbody tr:nth-of-type(5n) .text-start, tbody tr:nth-of-type(5n) {
+    border-bottom: 5px #0d47a1 solid !important;
+}
+
 </style>

@@ -102,6 +102,11 @@ export default class Check extends Vue {
 table th + th { border-left:1px solid #dddddd; }
 table td + td { border-left:1px solid #dddddd; }
 
+tbody tr:nth-of-type(5n) .text-start, tbody tr:nth-of-type(5n) {
+    border-bottom: 5px #0d47a1 solid !important;
+}
+
+
 input::placeholder {
     opacity: 0.2;
     font-size: 13px;
